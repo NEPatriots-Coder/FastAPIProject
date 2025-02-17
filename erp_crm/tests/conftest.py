@@ -1,15 +1,20 @@
-# test/conftest.py
 import pytest
+import sys
+import os
+from pathlib import Path
+
+# Get the project root directory
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from app.main import app
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.database import Base
-from app.main import app
-from app.config import settings
+from models.user import Base
 
 # Test database URL
 TEST_DATABASE_URL = "sqlite:///./test.db"
-
 
 @pytest.fixture(scope="session")
 def test_engine():
@@ -20,7 +25,6 @@ def test_engine():
     Base.metadata.create_all(bind=engine)
     yield engine
     Base.metadata.drop_all(bind=engine)
-
 
 @pytest.fixture(scope="function")
 def test_db(test_engine):
@@ -35,65 +39,15 @@ def test_db(test_engine):
     finally:
         db.close()
 
-
 @pytest.fixture(scope="module")
 def test_client():
     with TestClient(app) as client:
         yield client
 
 
-# test/test_auth.py
-def test_create_user(test_client, test_db):
-    response = test_client.post(
-        "/api/auth/register",
-        json={
-            "email": "test@example.com",
-            "password": "testpassword123",
-            "full_name": "Test User"
-        }
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["email"] == "test@example.com"
-    assert "password" not in data
-
-
-def test_login_user(test_client, test_db):
-    # First create a user
-    test_client.post(
-        "/api/auth/register",
-        json={
-            "email": "login@example.com",
-            "password": "testpassword123",
-            "full_name": "Login Test"
-        }
-    )
-
-    # Then try to login
-    response = test_client.post(
-        "/api/auth/token",
-        data={
-            "username": "login@example.com",
-            "password": "testpassword123"
-        }
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert "access_token" in data
-    assert data["token_type"] == "bearer"
-
-
-# test/test_customers.py
-def test_create_customer(test_client, test_db, auth_headers):
-    response = test_client.post(
-        "/api/customers/",
-        headers=auth_headers,
-        json={
-            "company_name": "Test Company",
-            "industry": "Technology",
-            "address": "123 Test St"
-        }
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["company_name"] == "Test Company"
+print("Current working directory:", os.getcwd())
+project_root = Path(__file__).parent.parent
+print("Project root:", project_root)
+print("Python path before:", sys.path)
+print("Python path after:", sys.path)
+print("Contents of app directory:", os.listdir(project_root / "app"))

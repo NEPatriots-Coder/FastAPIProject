@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..models.user import User
-from ..schemas.user import UserCreate, User as UserSchema
+from app.database import get_db
+from models.user import User
+from schemas.user import UserCreate, User as UserSchema
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from ..config import settings
+from app.config import settings
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
