@@ -1,0 +1,13 @@
+venv/
+.env
+
+
+.idea/
+__pycache__/
+*.pyc
+
+.coverage
+htmlcov/
+
+*.db
+test.db
