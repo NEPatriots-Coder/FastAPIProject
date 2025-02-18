@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import engine, Base
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+# Fix imports to use absolute imports
+from database import engine, Base
 from app.routes.auth import router as auth_router
-from app.routes.customer import router as customer_router
-from app.routes.contact import router as contact_router
+from .routes import auth_router, customer_router, contact_router
+
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -30,4 +33,4 @@ app.include_router(contact_router)
 
 @app.get("/")
 def read_root():
-    return {"Hello": "ERP_CRM"}
+    return {"Hello: ERP_CRM"}

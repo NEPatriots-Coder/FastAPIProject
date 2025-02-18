@@ -1,15 +1,20 @@
+# app/routes/auth.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from app.database import get_db
-from models.user import User
-from schemas.user import UserCreate, User as UserSchema
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+from passlib.context import CryptContext  # Add this import
 from datetime import datetime, timedelta
+from jose import JWTError, jwt
+from app.database import get_db
+from app.models.user import User
+from app.schemas.user import UserCreate, User as UserSchema
 from app.config import settings
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/auth",
+    tags=["Authentication"]
+)
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

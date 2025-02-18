@@ -1,10 +1,5 @@
 from pydantic_settings import BaseSettings
 
-try:
-    from pydantic_settings import BaseSettings
-except ImportError:
-    from pydantic import BaseSettings
-
 class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./erp_crm.db"
     SECRET_KEY: str = "Everly"
